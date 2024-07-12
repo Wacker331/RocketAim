@@ -81,6 +81,7 @@ void Aim()
         }
     }
     printf("Shoot in (%d, %d) to destroy %d targets\n", IdealShot.x, IdealShot.y, MaxShotedTargets);
+    free(Reachable);
     return;
 }
 
