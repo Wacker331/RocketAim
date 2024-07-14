@@ -51,7 +51,8 @@ int DistanceSquared(struct Point First, struct Point Second)
     return (First.x - Second.x) * (First.x - Second.x) + (First.y - Second.y) * (First.y - Second.y);
 }
 
-//Find reachable points from Targets in MaxDistance
+//Find reachable points from Targets in MaxDistance. 
+//If NULL provided for "Reachable", it returns only amount of reachable targets
 int ReachableTargets(struct Point AimedTarget, struct Point* Targets, int TargetsNum, struct Point** Reachable, int MaxDistance)
 {
     int i, tmpDistance, ReachableNum = 0;
@@ -68,20 +69,7 @@ int ReachableTargets(struct Point AimedTarget, struct Point* Targets, int Target
     return ReachableNum;
 }
 
-//Check number of hitted target if shot in ShotPoint
-int CheckHits(struct Point ShotPoint, struct Point* Targets, int TargetsNum)
-{
-    int i, HittedPoints = 0;
-    for (i = 0; i < TargetsNum; i++)
-    {
-        if (DistanceSquared(ShotPoint, Targets[i]) <= (RocketRadius * RocketRadius))
-        {
-            HittedPoints++;
-        }
-    }
-    return HittedPoints;
-}
-
+//Calculates middle point of "Targets" by average of coordinates
 struct Point CalculateMiddlePoint(struct Point* Targets, int TargetsNum, int* Set, int SetSize)
 {
     struct Point Middle;
@@ -104,6 +92,7 @@ struct Point CalculateMiddlePoint(struct Point* Targets, int TargetsNum, int* Se
     return Middle;
 }
 
+//Generates different sets of combinations that is used for indexes in "Targets" to enumerate variants of shot
 int GenerateCombinations(int MaxIndex, int End, int Index, int* Set, int SetSize, struct Point* Targets, int TargetsNum, struct Point* IdealShot) {
     int MaxHits = 0, tmp;
     struct Point tmpShot;
@@ -128,6 +117,7 @@ int GenerateCombinations(int MaxIndex, int End, int Index, int* Set, int SetSize
     return MaxHits;
 }
 
+//Enumerate all opportunities of shooting "MainTarget"
 int ScanTarget(struct Point MainTarget, struct Point* Reachable, int ReachableNum, struct Point* IdealShot)
 {
     int IndexesSet[AllTargetsNum];
@@ -142,6 +132,8 @@ int ScanTarget(struct Point MainTarget, struct Point* Reachable, int ReachableNu
             IdealShot -> x = tmpShot.x;
             IdealShot -> y = tmpShot.y;
         }
+        if (tmp == SetSize)
+            break; //Can't get more targets
     }
     return MaxHits;
 }
